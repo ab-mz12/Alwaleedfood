@@ -212,6 +212,19 @@
   </div>
 
 <script>
+/* ---- ONE-TIME CLEANUP: this app shares the ab-mz12.github.io domain with another
+   food log that used the "foodlog" key, which caused data to mix. Wipe the old shared
+   keys once, then this app uses its OWN key "foodlog_alwaleed" so it stays separate. ---- */
+(function(){
+  try{
+    if(!localStorage.getItem("alw_migrated_v1")){
+      localStorage.removeItem("foodlog");
+      localStorage.removeItem("supplog");
+      localStorage.removeItem("foodlog_alwaleed");
+      localStorage.setItem("alw_migrated_v1","1");
+    }
+  }catch(e){}
+})();
 const INGREDIENTS = [
 {cat:"بروتين",name:"بيض",unit:"حبة",protein:5.625,carb:0.45,fat:4.5,cal:64.8},
 {cat:"بروتين",name:"بياض البيض",unit:"g",protein:0.11,carb:0.01,fat:0,cal:0.5},
@@ -316,8 +329,8 @@ let pickTarget = null;
 let picked = null;
 let openMeals = {};
 function todayStr(){const d=new Date();return d.toISOString().slice(0,10);}
-function load(){try{return JSON.parse(localStorage.getItem("foodlog")||"{}");}catch(e){return {};}}
-function save(){localStorage.setItem("foodlog",JSON.stringify(store));}
+function load(){try{return JSON.parse(localStorage.getItem("foodlog_alwaleed")||"{}");}catch(e){return {};}}
+function save(){localStorage.setItem("foodlog_alwaleed",JSON.stringify(store));}
 function dayData(){ if(!store[curDate]) store[curDate]=MEAL_NAMES.map(()=>[]);
   while(store[curDate].length<MEAL_NAMES.length) store[curDate].push([]);
   return store[curDate];}
